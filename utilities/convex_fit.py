@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import scipy
 from scipy.spatial import ConvexHull
 
-def convex_fit(xy_coords, n_iterations=500, save=True):
+def convex_fit(xy_coords, n_iterations=500):
     '''
     This function returns a circle fit within the bounds of a convex hull, optimized using the Frank-Wolfe algorithm
 
@@ -12,12 +12,13 @@ def convex_fit(xy_coords, n_iterations=500, save=True):
     -----
     xy_coords - (m,2) array of m point coordinates in two dimensions
     n_iterations - number of iterations on the gradient descent optimization of the circle fit
-    save - user interface option. Default option is to save the circle fit plot convergence and return [(circle_center), best_radius] only.
-           'False' returns [convergence_losses, circle_centers, best_radius] where convergence_losses and circle_centers are vectors
     
     Returns
     -----
-    x - list of values depending on save parameter. Refer above
+    x - tuple of (best_center_coordinates, radius, returns_dict), 
+    where
+    returns_dict contains (hull_vertices, hull_center, centers, losses) 
+    for center and loss convergence plots
     '''
 
     hull = ConvexHull(xy_coords)
@@ -55,17 +56,10 @@ def convex_fit(xy_coords, n_iterations=500, save=True):
     centers = np.array(centers)
     losses = np.array(losses)
 
-    if save==True:
-        plt.figure(figsize=(2.5,2.5))
-        plt.plot(np.concatenate([hull_vertices[:, 0], hull_vertices[0:, 0]]), 
-                 np.concatenate([hull_vertices[:, 1]], hull_vertices[0:, 1]))
-        plt.plot(hull_center[np.newaxis, 0], hull_center[np.newaxis, 1], 'd', color='r')
-        plt.plot(centers[:, 0], centers[:, 1], '-', color='g')
-        plt.plot(centers[-1, 0], centers[-1, 1], 's', color='g')
-        plt.plot(xy_coords[:, 0], xy_coords[:, 1], '.', color='k', alpha=1.0)
-        plt.savefig(f'{int(losses[-1])}.pdf')
-        return [centers[-1,:], radius]
-    elif save==False:
-        return [losses, centers, radius]
-    else:
-        raise AttributeError('Invalid save parameter')
+    returns_dict = {}
+    returns_dict['hull_vertices'] = hull_vertices
+    returns_dict['hull_center'] = hull_center
+    returns_dict['centers'] = centers
+    returns_dict['losses'] = losses
+
+    return (centers[-1, :], radius, returns_dict)
