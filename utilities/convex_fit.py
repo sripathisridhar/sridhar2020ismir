@@ -35,7 +35,7 @@ def convex_fit(xy_coords, n_iterations=500, save=True):
         # Equation 5, Coope (1992) Circle fitting by linear and non-linear least squares
         xy_vectors = xy_coords - center
         radius = np.mean(np.linalg.norm(xy_vectors, axis=1))
-        azimuths = xy_vectors / np.linalg.norm(xy_vectors, axis=1)[:, np.newaxis()]
+        azimuths = xy_vectors / np.linalg.norm(xy_vectors, axis=1)[:, np.newaxis]
         gradient = 2 * (np.sum(xy_vectors, axis=0) - radius * np.sum(azimuths, axis=0))
 
         # Compute candidate directions
@@ -48,7 +48,7 @@ def convex_fit(xy_coords, n_iterations=500, save=True):
         center += learning_rate * best_direction
 
         # Compute loss
-        loss = np.linalg.norm(xy_vectors) - np.sum(np.linalg.norm(xy_vectors, axis=1))**2 / xy_vectors/shape[0]
+        loss = np.linalg.norm(xy_vectors) - np.sum(np.linalg.norm(xy_vectors, axis=1))**2 / xy_vectors.shape[0]
         losses.append(loss)
         centers.append(np.copy(center))
     
@@ -68,4 +68,4 @@ def convex_fit(xy_coords, n_iterations=500, save=True):
     elif save==False:
         return [losses, centers, radius]
     else:
-        raise AttributeError('save parameter value not understood')
+        raise AttributeError('Invalid save parameter')
