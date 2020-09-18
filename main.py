@@ -8,6 +8,7 @@ from mirdata import tinysol
 from collections import Counter
 import matplotlib
 import matplotlib.pyplot as plt
+import colorcet as cc
 
 from utilities.isomapEmbedding import isomapEmbedding
 from utilities.convex_fit import convex_fit
@@ -58,30 +59,43 @@ def main():
 
         xyz_prime = np.concatenate((xy_prime, z_prime[:, np.newaxis]), axis=1)
         
-        # store loss
-        D_proj = self_distance(xyz_prime)
-        D_isomap = self_distance(xyz_coords)
+        # Euclidean projection loss
+        diffs_squared = (xyz_coords - xyz_prime) ** 2
+        d_euclideans = np.sqrt(np.sum(diffs_squared, axis=1))
+        loss = np.mean(d_euclideans)
 
-        loss = frobenius_distance(centered(D_proj), centered(D_isomap)) / xyz_prime.shape[0]
         losses[setting["instr"]] = loss
 
         # Plot Frank-wolfe convergence plot
         hull_vertices = returns_dict['hull_vertices']
         hull_center = returns_dict['hull_center']
         centers = returns_dict['centers']
+
         plt.figure(figsize=(8,8))
+        plt.axis("off")
         plt.plot(
             np.concatenate([hull_vertices[:, 0], hull_vertices[0:, 0]]), 
             np.concatenate([hull_vertices[:, 1], hull_vertices[0:, 1]]),
-            '-s', color='b')
+            '-s', color='k', linewidth=0.5)
         plt.plot(hull_center[np.newaxis, 0], hull_center[np.newaxis, 1], 'd', color='r')
         plt.plot(centers[:, 0], centers[:, 1], '-', color='g')
         plt.plot(centers[-1, 0], centers[-1, 1], 's', color='g')
-        plt.plot(xy_coords[:, 0], xy_coords[:, 1], '.', color='k', alpha=1.0)
+
+        color_ids = np.floor(np.linspace(0, 256, Q, endpoint=False)).astype("int")
+        color_list = [cc.cyclic_mygbm_30_95_c78[i] for i in color_ids]
+
+        # Plot embedding with color
+        n_points = xy_coords.shape[0]
+        for i in range(n_points):
+            plt.scatter(xy_coords[i, 0], xy_coords[i, 1], color = color_list[i%Q], s=25.0)
+        plt.plot(xy_coords[:, 0], xy_coords[:, 1], color="black", linewidth=0.2)
         plt.savefig("./convexHull/{}.pdf".format(setting["instr"]))
 
-    with open("TinySOL.json", "w") as f:
-        json.dump(losses, f)
+    # Sort by euclidean loss for readability
+    sorted_losses = {k : v for k, v in sorted(losses.items(), key = lambda item : item[1])}
+
+    with open("TinySOL_euclideanLosses.json", "w") as f:
+        json.dump(sorted_losses, f)
 
 if __name__ == "__main__":
     main()
