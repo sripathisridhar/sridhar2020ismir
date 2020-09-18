@@ -2,7 +2,7 @@ import numpy as np
 
 def circle_projection(xy_center, radius, xy_coords):
     '''
-    This functions return coordinates of points projected onto given circle
+    This function returns coordinates of points projected onto given circle
     
     Inputs
     -----
