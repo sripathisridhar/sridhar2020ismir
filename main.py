@@ -23,7 +23,7 @@ def main(dataset="TinySOL"):
     if dataset.lower() == "tinysol":
         track_ids = tinysol.track_ids()
         track_instrs = [track_id.split('-')[0] for track_id in track_ids]
-        instr_list = list(Counter(track_instrs).keys())
+        instr_list = list(Counter(track_instrs).keys()) + [''] # 14 instruments + all instruments 
     else:
         instr_list = ['']
 
@@ -43,11 +43,12 @@ def main(dataset="TinySOL"):
             features_dict = {
                 key:f[key][()]
                 for key in f.keys()
+                if setting['instr'] in key
             }
         batch_features = np.stack(list(features_dict.values()), axis=1)
 
         # compute isomap for subset
-        isomap, freqs, rho_std = isomapEmbedding(batch_features)
+        isomap, _, rho_std = isomapEmbedding(batch_features)
         xyz_coords = isomap.fit_transform(rho_std)
 
         # convex hull fit, line fit
@@ -91,7 +92,9 @@ def main(dataset="TinySOL"):
         for i in range(n_points):
             plt.scatter(xy_coords[i, 0], xy_coords[i, 1], color = color_list[i%Q], s=25.0)
         plt.plot(xy_coords[:, 0], xy_coords[:, 1], color="black", linewidth=0.2)
-        plt.savefig("./convexHull/{}.pdf".format(dataset))
+
+        pdf_name = "./convexHull/{}.pdf".format(dataset + '_' + setting['instr'])
+        plt.savefig(pdf_name) # store with dataset and instrument name
 
     # Sort by euclidean loss for readability
     sorted_losses = {k : v for k, v in sorted(losses.items(), key = lambda item : item[1])}
@@ -105,14 +108,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dataset", help="case-insensitive dataset name [TinySOL, NTVow]")
     args = parser.parse_args()
-    args_lower = args.dataset.lower()
 
-    if args_lower not in ["tinysol", "ntvow"]:
+    if not args.dataset:
+        main()
+    elif args.dataset.lower() not in ["tinysol", "ntvow"]:
         raise ValueError("Invalid argument")
-    elif args_lower == "ntvow":
+    elif args.dataset.lower() == "ntvow":
         main("NTVow")
     else:
         main()
+    
 
 
 
