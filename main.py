@@ -18,11 +18,14 @@ from utilities.frobenius_distance import frobenius_distance
 from utilities.centered import centered
 from utilities.circle_projection import circle_projection
 
-def main():
+def main(dataset="TinySOL"):
 
-    track_ids = tinysol.track_ids()
-    track_instrs = [track_id.split('-')[0] for track_id in track_ids]
-    instr_list = list(Counter(track_instrs).keys())
+    if dataset.lower() == "tinysol":
+        track_ids = tinysol.track_ids()
+        track_instrs = [track_id.split('-')[0] for track_id in track_ids]
+        instr_list = list(Counter(track_instrs).keys())
+    else:
+        instr_list = ['']
 
     Q = 24
     settings = {
@@ -36,11 +39,10 @@ def main():
     losses = {}
     for setting in settings_list:
         # read precomputed features
-        with h5py.File("TinySOL.h5", "r") as f:
+        with h5py.File("{}.h5".format(dataset), "r") as f:
             features_dict = {
                 key:f[key][()]
                 for key in f.keys()
-                if setting["instr"] in key
             }
         batch_features = np.stack(list(features_dict.values()), axis=1)
 
@@ -64,7 +66,7 @@ def main():
         d_euclideans = np.sqrt(np.sum(diffs_squared, axis=1))
         loss = np.mean(d_euclideans)
 
-        losses[setting["instr"]] = loss
+        losses[setting['instr']] = loss
 
         # Plot Frank-wolfe convergence plot
         hull_vertices = returns_dict['hull_vertices']
@@ -89,16 +91,28 @@ def main():
         for i in range(n_points):
             plt.scatter(xy_coords[i, 0], xy_coords[i, 1], color = color_list[i%Q], s=25.0)
         plt.plot(xy_coords[:, 0], xy_coords[:, 1], color="black", linewidth=0.2)
-        plt.savefig("./convexHull/{}.pdf".format(setting["instr"]))
+        plt.savefig("./convexHull/{}.pdf".format(dataset))
 
     # Sort by euclidean loss for readability
     sorted_losses = {k : v for k, v in sorted(losses.items(), key = lambda item : item[1])}
 
-    with open("TinySOL_euclideanLosses.json", "w") as f:
+    with open("{}_euclideanLosses.json".format(dataset), "w") as f:
         json.dump(sorted_losses, f)
 
 if __name__ == "__main__":
-    main()
+
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--dataset", help="case-insensitive dataset name [TinySOL, NTVow]")
+    args = parser.parse_args()
+    args_lower = args.dataset.lower()
+
+    if args_lower not in ["tinysol", "ntvow"]:
+        raise ValueError("Invalid argument")
+    elif args_lower == "ntvow":
+        main("NTVow")
+    else:
+        main()
 
 
 
