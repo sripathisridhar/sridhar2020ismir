@@ -1,18 +1,8 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import numpy as np
 from sklearn.manifold import Isomap
 
 import librosa
 from librosa.core import amplitude_to_db
-
-
-# In[2]:
-
 
 def isomapEmbedding(batch_features, q=24, comp='log', n_neighbors=3, n_octaves=3, n_dimensions=3):
     '''
@@ -34,8 +24,6 @@ def isomapEmbedding(batch_features, q=24, comp='log', n_neighbors=3, n_octaves=3
     freqs - Frequency bin array
     rho_std - Pearson correlation matrix
     '''
-    
-    
     CQT_OCTAVES = 7
     
     if comp!='log':
