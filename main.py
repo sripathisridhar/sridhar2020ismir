@@ -74,15 +74,16 @@ def main(dataset="TinySOL"):
         hull_center = returns_dict['hull_center']
         centers = returns_dict['centers']
 
-        plt.figure(figsize=(8,8))
+        plt.figure(figsize=(2.5, 2.5))
         plt.axis("off")
         plt.plot(
             np.concatenate([hull_vertices[:, 0], hull_vertices[0:, 0]]), 
             np.concatenate([hull_vertices[:, 1], hull_vertices[0:, 1]]),
-            '-s', color='k', linewidth=0.5)
-        plt.plot(hull_center[np.newaxis, 0], hull_center[np.newaxis, 1], 'd', color='r')
-        plt.plot(centers[:, 0], centers[:, 1], '-', color='g')
-        plt.plot(centers[-1, 0], centers[-1, 1], 's', color='g')
+            '-s', color='k', linewidth=0.5, markersize=2.0)
+        plt.plot(hull_center[np.newaxis, 0], hull_center[np.newaxis, 1], 
+                'd', color='r', markersize=4.0, fillstyle='none', linewidth=0.5)
+        plt.plot(centers[:, 0], centers[:, 1], '-', color='g', linewidth=1.0)
+        plt.plot(centers[-1, 0], centers[-1, 1], 's', color='g', markersize=4.0, fillstyle='none', linewidth=0.5)
 
         color_ids = np.floor(np.linspace(0, 256, Q, endpoint=False)).astype("int")
         color_list = [cc.cyclic_mygbm_30_95_c78[i] for i in color_ids]
