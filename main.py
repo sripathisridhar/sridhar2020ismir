@@ -23,7 +23,7 @@ def main(dataset="TinySOL"):
     if dataset.lower() == "tinysol":
         track_ids = tinysol.track_ids()
         track_instrs = [track_id.split('-')[0] for track_id in track_ids]
-        instr_list = list(Counter(track_instrs).keys())
+        instr_list = list(Counter(track_instrs).keys()) + [''] # 14 instruments + all instruments 
     else:
         instr_list = ['']
 
@@ -43,11 +43,12 @@ def main(dataset="TinySOL"):
             features_dict = {
                 key:f[key][()]
                 for key in f.keys()
+                if setting['instr'] in key
             }
         batch_features = np.stack(list(features_dict.values()), axis=1)
 
         # compute isomap for subset
-        isomap, freqs, rho_std = isomapEmbedding(batch_features)
+        isomap, _, rho_std = isomapEmbedding(batch_features)
         xyz_coords = isomap.fit_transform(rho_std)
 
         # convex hull fit, line fit
@@ -73,15 +74,16 @@ def main(dataset="TinySOL"):
         hull_center = returns_dict['hull_center']
         centers = returns_dict['centers']
 
-        plt.figure(figsize=(8,8))
+        plt.figure(figsize=(2.5, 2.5))
         plt.axis("off")
         plt.plot(
             np.concatenate([hull_vertices[:, 0], hull_vertices[0:, 0]]), 
             np.concatenate([hull_vertices[:, 1], hull_vertices[0:, 1]]),
-            '-s', color='k', linewidth=0.5)
-        plt.plot(hull_center[np.newaxis, 0], hull_center[np.newaxis, 1], 'd', color='r')
-        plt.plot(centers[:, 0], centers[:, 1], '-', color='g')
-        plt.plot(centers[-1, 0], centers[-1, 1], 's', color='g')
+            '-s', color='k', linewidth=0.5, markersize=2.0)
+        plt.plot(hull_center[np.newaxis, 0], hull_center[np.newaxis, 1], 
+                'd', color='r', markersize=4.0, fillstyle='none', linewidth=0.5)
+        plt.plot(centers[:, 0], centers[:, 1], '-', color='g', linewidth=1.0)
+        plt.plot(centers[-1, 0], centers[-1, 1], 's', color='g', markersize=4.0, fillstyle='none', linewidth=0.5)
 
         color_ids = np.floor(np.linspace(0, 256, Q, endpoint=False)).astype("int")
         color_list = [cc.cyclic_mygbm_30_95_c78[i] for i in color_ids]
@@ -91,7 +93,9 @@ def main(dataset="TinySOL"):
         for i in range(n_points):
             plt.scatter(xy_coords[i, 0], xy_coords[i, 1], color = color_list[i%Q], s=25.0)
         plt.plot(xy_coords[:, 0], xy_coords[:, 1], color="black", linewidth=0.2)
-        plt.savefig("./convexHull/{}.pdf".format(dataset))
+
+        pdf_name = "./convexHull/{}.pdf".format(dataset + '_' + setting['instr'])
+        plt.savefig(pdf_name) # store with dataset and instrument name
 
     # Sort by euclidean loss for readability
     sorted_losses = {k : v for k, v in sorted(losses.items(), key = lambda item : item[1])}
@@ -105,14 +109,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dataset", help="case-insensitive dataset name [TinySOL, NTVow]")
     args = parser.parse_args()
-    args_lower = args.dataset.lower()
 
-    if args_lower not in ["tinysol", "ntvow"]:
+    if not args.dataset:
+        main()
+    elif args.dataset.lower() not in ["tinysol", "ntvow"]:
         raise ValueError("Invalid argument")
-    elif args_lower == "ntvow":
+    elif args.dataset.lower() == "ntvow":
         main("NTVow")
     else:
         main()
+    
 
 
 
