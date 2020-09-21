@@ -44,7 +44,7 @@ def convex_fit(xy_coords, n_iterations=500):
         inner_product = np.dot(directions, gradient)
         best_direction = directions[np.argmin(inner_product)]
 
-        #Gradient descent update
+        # Gradient descent update
         learning_rate = 0.01 * 2 / (2 + i) # linear decay
         center += learning_rate * best_direction
 

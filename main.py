@@ -37,6 +37,7 @@ def main(dataset="TinySOL"):
     settings_list = ParameterGrid(settings)
     
     losses = {}
+    radii = {}
     for setting in settings_list:
         # read precomputed features
         with h5py.File("{}.h5".format(dataset), "r") as f:
@@ -68,6 +69,7 @@ def main(dataset="TinySOL"):
         loss = np.mean(d_euclideans)
 
         losses[setting['instr']] = loss
+        radii[setting['instr']] = radius
 
         # Plot Frank-wolfe convergence plot
         hull_vertices = returns_dict['hull_vertices']
@@ -99,9 +101,13 @@ def main(dataset="TinySOL"):
 
     # Sort by euclidean loss for readability
     sorted_losses = {k : v for k, v in sorted(losses.items(), key = lambda item : item[1])}
+    sorted_radii = {k : v for k, v in sorted(radii.items(), key = lambda item : item[1])}
 
     with open("{}_euclideanLosses.json".format(dataset), "w") as f:
         json.dump(sorted_losses, f)
+
+    with open("{}_radii.json".format(dataset), "w") as f:
+        json.dump(sorted_radii, f)
 
 if __name__ == "__main__":
 
@@ -112,10 +118,12 @@ if __name__ == "__main__":
 
     if not args.dataset:
         main()
-    elif args.dataset.lower() not in ["tinysol", "ntvow"]:
+    elif args.dataset.lower() not in ["tinysol", "ntvow", "enst"]:
         raise ValueError("Invalid argument")
     elif args.dataset.lower() == "ntvow":
         main("NTVow")
+    elif args.dataset.lower() == "enst":
+        main("ENST-drums-public")
     else:
         main()
     
