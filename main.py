@@ -64,7 +64,7 @@ def main(dataset="TinySOL"):
         xyz_prime = np.concatenate((xy_prime, z_prime[:, np.newaxis]), axis=1)
         
         # Euclidean projection loss
-        diffs_squared = (xyz_coords - xyz_prime) ** 2
+        diffs_squared = (xyz_coords- xyz_prime) ** 2
         d_euclideans = np.sqrt(np.sum(diffs_squared, axis=1))
         loss = np.mean(d_euclideans)
 
@@ -113,7 +113,7 @@ if __name__ == "__main__":
 
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--dataset", help="case-insensitive dataset name [TinySOL, NTVow]")
+    parser.add_argument("-d", "--dataset", help="case-insensitive dataset name [TinySOL, NTVow, ENST]")
     args = parser.parse_args()
 
     if not args.dataset:

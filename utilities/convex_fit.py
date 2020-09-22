@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 import scipy
 from scipy.spatial import ConvexHull
 
-def convex_fit(xy_coords, n_iterations=500):
+def convex_fit(xy_points, n_iterations=500):
     '''
     This function returns a circle fit within the bounds of a convex hull, optimized using the Frank-Wolfe algorithm
 
     Inputs
     -----
-    xy_coords - (m,2) array of m point coordinates in two dimensions
+    xy_points - (m,2) array of m point coordinates in two dimensions
     n_iterations - number of iterations on the gradient descent optimization of the circle fit
     
     Returns
@@ -20,6 +20,10 @@ def convex_fit(xy_coords, n_iterations=500):
     returns_dict contains (hull_vertices, hull_center, centers, losses) 
     for center and loss convergence plots
     '''
+    # Compute chroma-based centroids across octaves in 2-D
+    n = xy_points.shape[0]
+    ids = [0, int(n // 3), int(2 * n // 3)]
+    xy_coords = (xy_points[ids[0]:ids[1], :] + xy_points[ids[1]:ids[2], :] + xy_points[ids[2]:, :]) / 3 
 
     hull = ConvexHull(xy_coords)
     hull_vertices = xy_coords[hull.vertices, :]
@@ -51,7 +55,7 @@ def convex_fit(xy_coords, n_iterations=500):
         # Compute loss
         loss = np.linalg.norm(xy_vectors) - np.sum(np.linalg.norm(xy_vectors, axis=1))**2 / xy_vectors.shape[0]
         losses.append(loss)
-        centers.append(np.copy(center))
+        centers.append(np.copy(center)) 
     
     centers = np.array(centers)
     losses = np.array(losses)
