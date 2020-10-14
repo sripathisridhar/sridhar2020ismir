@@ -1,0 +1,5 @@
+# Visual studio logs #
+**/.vscode
+
+# Jupyter notebook logs #
+**/.ipynb_checkpoints
