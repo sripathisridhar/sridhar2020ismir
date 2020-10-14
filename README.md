@@ -30,7 +30,7 @@ ENST-drums (dry_mix subset which contains isolated hits on drums) <br/>
 NTVOW (North Texas Vowel Dataset, containing 12 vowel utterances from 50 speakers) <br/>
 
 ## Links
-Link to the [Pre-print](https://arxiv.org/abs/2010.00673) <br/>
-Link to the [ISMIR Presentation Video](https://youtu.be/ayflseXZ3-c) <br/>
+[Pre-print](https://arxiv.org/abs/2010.00673) <br/>
+[ISMIR Presentation Video](https://youtu.be/ayflseXZ3-c) <br/>
 
 
