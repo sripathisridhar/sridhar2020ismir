@@ -9,23 +9,26 @@ Our method is unsupervised and uses a custom Frank-Wolfe algorithm to minimize a
 Numerical experiments indicate that isolated musical notes have a higher helicality than speech, followed by drum hits. 
 
 ## Dependencies
-mir-data
-sklearn, scipy, numpy (core numerical computation)
-librosa (audio feature extraction)
-matplotlib, colorcet (plotting)
-h5py, json (data handling)
+mir-data <br/>
+sklearn, scipy, numpy (core numerical computation) <br/>
+librosa (audio feature extraction) <br/>
+matplotlib, colorcet (plotting) <br/>
+h5py, json (data handling) <br/>
 
 ## Download and run
-Dataset features are pre-computed and stored in the corresponding .h5 files in the root directory.
-Execute main.py from command line with the name of the dataset you want to test
+Dataset features are pre-computed and stored in the corresponding .h5 files in the root directory. <br/>
+Execute main.py from a command line terminal with the name of the dataset you want to test. <br/>
+
+Example execution code
+`python3 main.py -d tinysol`
 
 ## Datasets
-TinySOL (Isolated notes played on 14 different instruments)
-ENST-drums (dry_mix subset which contains isolated hits on drums)
-NTVOW (North Texas Vowel Dataset, containing 12 vowel utterances from 50 speakers)
+TinySOL (Isolated notes played on 14 different instruments) <br/>
+ENST-drums (dry_mix subset which contains isolated hits on drums) <br/>
+NTVOW (North Texas Vowel Dataset, containing 12 vowel utterances from 50 speakers) <br/>
 
 ## Links
-Link to the pre-print: https://arxiv.org/abs/2010.00673
-Link to presentation video: https://youtu.be/ayflseXZ3-c
+Link to the [Pre-print](https://arxiv.org/abs/2010.00673) <br/>
+Link to the [ISMIR Presentation Video](https://youtu.be/ayflseXZ3-c) <br/>
 
 
