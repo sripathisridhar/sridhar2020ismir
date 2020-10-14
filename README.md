@@ -21,8 +21,8 @@ Execute main.py from a command line terminal with the name of the dataset you wa
 
 `python3 main.py -d tinysol`
 
-Plots are stored in the `./convexHull` sub-directory by default.
-Numerical results are stored in the `<dataset>_helicality.json` format in the main directory.
+Plots are stored in the `./convexHull` sub-directory by default. <br/>
+Numerical results are stored in the `<dataset>_helicality.json` format in the main directory. <br/>
 
 ## Datasets
 TinySOL (Isolated notes played on 14 different instruments) <br/>
