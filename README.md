@@ -1,5 +1,5 @@
-# sridhar2020ismir
-In this paper, we introduce a novel algorithm to measure the octave-equivalence of audio datasets. To that end
+# Helicality: An Isomap-based Measure of Octave Equivalence in Audio Data
+In this paper, we introduce a novel algorithm to measure the octave-equivalence of audio datasets. 
 Octave equivalence serves as domain-knowledge in MIR systems, including chromagram, spiral convolutional networks, and harmonic CQT. 
 Prior work has applied the Isomap manifold learning algorithm to unlabeled audio data to embed frequency sub-bands in 3-D space where 
 the Euclidean distances are inversely proportional to the strength of their Pearson correlations. 
@@ -19,8 +19,10 @@ h5py, json (data handling) <br/>
 Dataset features are pre-computed and stored in the corresponding .h5 files in the root directory. <br/>
 Execute main.py from a command line terminal with the name of the dataset you want to test. <br/>
 
-Example execution code
 `python3 main.py -d tinysol`
+
+Plots are stored in the `./convexHull` sub-directory by default.
+Numerical results are stored in the `<dataset>_helicality.json` format in the main directory.
 
 ## Datasets
 TinySOL (Isolated notes played on 14 different instruments) <br/>
