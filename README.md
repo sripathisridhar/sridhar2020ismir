@@ -1,5 +1,5 @@
 # Helicality: An Isomap-based Measure of Octave Equivalence in Audio Data
-This is the repository pertaining to the above-titled Late-Breaking Demo presented at ISMIR 2020.
+This is the repository pertaining to the above-titled Late-Breaking Demo presented at ISMIR 2020. <br/>
 In this paper, we introduce a novel algorithm to measure the octave-equivalence of audio datasets. 
 Octave equivalence serves as domain-knowledge in MIR systems, including chromagram, spiral convolutional networks, and harmonic CQT. 
 Prior work has applied the Isomap manifold learning algorithm to unlabeled audio data to embed frequency sub-bands in 3-D space where 
